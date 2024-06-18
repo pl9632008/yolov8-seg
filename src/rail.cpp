@@ -135,12 +135,12 @@ std::vector<Object> infer_rail::doInference(cv::Mat & img){
 
     int net_width = 4 + CLASSES + CHANNELS_OUT;
 
-	std::vector<int> classIds;						  
-	std::vector<float> scores;					 
-	std::vector<cv::Rect> boxes;
+    std::vector<int> classIds;						  
+    std::vector<float> scores;					 
+    std::vector<cv::Rect> boxes;
     std::vector<std::vector<float>> temp_result;
 
-	float *pdata = output0_arr_;
+    float *pdata = output0_arr_;
 
     for (int i = 0; i < NUM_BOXES; i++) {
         float* score_ptr = std::max_element(pdata + 4, pdata + 4 + CLASSES);
@@ -179,7 +179,7 @@ std::vector<Object> infer_rail::doInference(cv::Mat & img){
             scores.push_back(box_score);
             boxes.push_back(cv::Rect(l, t, r-l, b-t));
 
-			std::vector<float> temp(pdata + 4 + CLASSES, pdata + net_width);
+	    std::vector<float> temp(pdata + 4 + CLASSES, pdata + net_width);
             temp_result.push_back(temp);
 
         }
