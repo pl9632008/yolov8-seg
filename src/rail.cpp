@@ -941,3 +941,4 @@ std::vector<Configuration> infer_rail::readConfig(std::string & configPath){
     return configurations;
 
 }
+
