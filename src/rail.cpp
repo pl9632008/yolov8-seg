@@ -94,6 +94,71 @@ cv::Mat infer_rail::findLargestContour(cv::Mat & mask)
 	return result;
 }
 
+int cnt = 0;
+
+void infer_rail::res2labelme(cv::Mat & img ,std::vector<Object> & objs){
+
+        // if(cnt %5 !=0){
+        //     cnt++;
+        //     return;
+        // }
+
+        std::string img_name = video_name_;
+
+        json j;
+        j["version"] = "0.3.3";
+        j["flags"] = {};
+        j["shapes"] = {};
+        j["imagePath"] = img_name + "_" +std::to_string(cnt) +".jpg";
+        j["imageData"] ={};
+        j["imageHeight"] = img.rows;
+        j["imageWidth"] = img.cols;
+
+
+        for(auto obj : objs){
+
+            cv::Mat mask = obj.mask;
+            std::vector<std::vector<cv::Point>> contours;
+            cv::findContours(mask, contours,cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
+            std::string label = obj.label;
+                
+            json j_temp;
+            j_temp["label"] = label;
+            j_temp["text"]="";
+            j_temp["group_id"]={};
+            j_temp["shape_type"]="polygon";
+            j_temp["flags"] = {};
+            j_temp["points"] ={}; 
+
+            if(contours.empty()){
+                continue;
+            }
+
+            for(auto &p: contours[0]){
+                j_temp["points"].push_back({p.x,p.y});
+            }
+            j["shapes"].push_back(j_temp);
+
+        }
+
+
+        if(!j["shapes"].empty()){
+
+            std::string out_img = out_path_+ "/" +img_name + "_" + std::to_string(cnt) +".jpg";
+            cv::imwrite(out_img, img);
+
+            std::string  out_json = out_path_+ "/" +img_name + "_" + std::to_string(cnt) +".json";
+            std::ofstream o(out_json);
+            o << std::setw(4) << j << std::endl;
+
+        }
+        cnt++;
+
+       
+
+}
+
+
 std::vector<Object> infer_rail::doInference(cv::Mat & img){
 
     int input_index = engine_->getBindingIndex(images_);
@@ -250,7 +315,9 @@ std::vector<Object> infer_rail::doInference(cv::Mat & img){
         obj.mask = findLargestContour(obj.mask);
     }
 
-    //draw_objects(img, objs);
+    // draw_objects(img, objs);
+
+    res2labelme(img, objs);
     return objs;
 
 }

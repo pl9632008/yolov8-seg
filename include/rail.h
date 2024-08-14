@@ -7,8 +7,12 @@
 #include <cmath>
 #include <NvInfer.h>
 #include <algorithm>
-
+#include <nlohmann/json.hpp>
+#include "ini.h"
 using namespace nvinfer1;
+
+using json = nlohmann::json;
+
 
 struct Object{
 
@@ -88,7 +92,8 @@ class Logger : public ILogger
 
 
 
-class infer_rail
+class infer_rail: public ini::iniReader
+
 {
 public:
     infer_rail();
@@ -110,6 +115,11 @@ public:
     std::vector<Configuration> readConfig(std::string & configPath);
     void init(RailInfo & rail_info, MarkInfo & mark_info_near);
     std::vector<point_set> infer_out(cv::Mat & image1);
+
+    void res2labelme(cv::Mat & img, std::vector<Object> & objs);
+    std::string video_name_;
+    std::string out_path_;
+
 
     Logger logger_;
     std::unique_ptr<IRuntime> runtime_;
@@ -133,7 +143,7 @@ public:
     int MASK_WIDTH = 160;
     int MASK_HEIGHT = 160;
     float CONF_THRESHOLD = 0.5;
-    float NMS_THRESHOLD = 0.5;
+    float NMS_THRESHOLD = 0.7;
     float MASK_THRESHOLD = 0.5;
     float * images_arr_;
     float * output0_arr_;
