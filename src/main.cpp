@@ -221,8 +221,9 @@ int main(){
 	std::string video_name = infer.ReadString("video", "name", "");
     std::string out_prefix = infer.ReadString("video", "outprefix", "");
     std::string video_prefix = infer.ReadString("video", "videoprefix", "");
+    std::string video_suffix = infer.ReadString("video", "videosuffix", "");
 
-    std::string video_path = video_prefix + "/" +video_name + ".avi";
+    std::string video_path = video_prefix + "/" +video_name + video_suffix;
     std::string out_path = out_prefix + "/" +video_name ;
     infer.video_name_ = video_name;
     infer.out_path_ = out_path;
