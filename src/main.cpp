@@ -207,11 +207,11 @@
 int main(){
 
     infer_rail infer;
-    std::string engine_path = "/home/wheeltec/wjd/yolov8-seg/models/train25.engine";
+    std::string engine_path = "../models/train29.engine";
     infer.loadEngine(engine_path);
 
 
-    bool ret = infer.ReadConfig("/home/wheeltec/wjd/yolov8-seg/config/config.ini");
+    bool ret = infer.ReadConfig("../config/config.ini");
 	if (ret == false) 
     {
 		printf("ReadConfig is Error,Cfg=%s", "config.ini");
